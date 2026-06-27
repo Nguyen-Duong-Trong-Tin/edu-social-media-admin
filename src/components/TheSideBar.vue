@@ -18,10 +18,8 @@
           : 'border-transparent text-white/70 hover:bg-white/5'
       ]">
 
-        <component
-          :is="iconMap[link.icon]"
-          :class="['size-4', isRouteActive(link.path, link.isExact) ? 'text-[#1877F2]' : '']"
-        />
+        <component :is="iconMap[link.icon]"
+          :class="['size-4', isRouteActive(link.path, link.isExact) ? 'text-[#1877F2]' : '']" />
         <span>{{ link.name }}</span>
 
       </router-link>
@@ -43,6 +41,7 @@ import { useRoute } from 'vue-router';
 import {
   BookOpen, FileText, GraduationCap,
   LayoutDashboard,
+  Network,
   Settings, Shield, UserCog, Users
 } from "lucide-vue-next";
 import { computed } from 'vue';
@@ -58,7 +57,8 @@ const iconMap: Record<string, any> = {
   UserCog,
   BookOpen,
   FileText,
-  Settings
+  Settings,
+  Network
 };
 
 const settingSidebarLinks = computed(() => store.state.settingSidebarLinks.settingSidebarLinks);

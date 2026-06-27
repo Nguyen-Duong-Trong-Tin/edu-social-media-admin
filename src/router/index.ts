@@ -5,6 +5,7 @@ import RolePermissionsLayout from "@/views/roles/RolePermissionsLayout.vue";
 import RolesView from "@/views/roles/RolesView.vue";
 import AccountsView from "@/views/accounts/AccountsView.vue";
 import UsersView from "@/views/users/UsersView.vue";
+import GroupTopicsView from "@/views/groupTopics/GroupTopicsView.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
@@ -46,6 +47,11 @@ const router = createRouter({
       path: "/users",
       name: "users",
       component: UsersView,
+    },
+    {
+      path: "/group-topics",
+      name: "group-topics",
+      component: GroupTopicsView,
     },
   ],
 });
