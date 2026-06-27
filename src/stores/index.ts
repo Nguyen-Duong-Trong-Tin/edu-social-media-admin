@@ -5,6 +5,7 @@ import settingSidebarLinks from "./modules/settingSidebarLinks";
 import accounts from "./modules/accounts";
 import users from "./modules/users";
 import groupTopics from "./modules/groupTopics";
+import groups from "./modules/groups";
 
 export default createStore({
   state: {},
@@ -17,6 +18,7 @@ export default createStore({
     settingSidebarLinks,
     accounts,
     users,
-    groupTopics
+    groupTopics,
+    groups
   },
 });

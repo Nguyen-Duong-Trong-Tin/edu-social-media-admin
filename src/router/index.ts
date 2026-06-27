@@ -6,6 +6,7 @@ import RolesView from "@/views/roles/RolesView.vue";
 import AccountsView from "@/views/accounts/AccountsView.vue";
 import UsersView from "@/views/users/UsersView.vue";
 import GroupTopicsView from "@/views/groupTopics/GroupTopicsView.vue";
+import GroupsView from "@/views/groups/GroupsView.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
@@ -52,6 +53,11 @@ const router = createRouter({
       path: "/group-topics",
       name: "group-topics",
       component: GroupTopicsView,
+    },
+    {
+      path: "/groups",
+      name: "groups",
+      component: GroupsView,
     },
   ],
 });
