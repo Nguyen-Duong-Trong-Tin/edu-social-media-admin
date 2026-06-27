@@ -3,48 +3,88 @@
     <CardHeader class="p-0 flex-row justify-between items-center gap-2">
       <div class="relative w-72">
         <Search class="size-4 top-1/2 -translate-y-1/2 text-neutral-500 absolute left-3" />
-        <Input class="border-transparent bg-neutral-100 pl-9 h-9" placeholder="Search roles..." v-model="searchKeyword" />
+        <Input class="border-transparent bg-neutral-100 pl-9 h-9" placeholder="Search users by name..." v-model="searchKeyword" />
       </div>
-      <Button variant="outline" size="sm" class="gap-2">
+      <Button variant="outline" size="sm" class="gap-2" @click="showFilters = !showFilters" :class="{ 'bg-neutral-100': showFilters }">
         <SlidersHorizontal class="size-4" /> Filter
       </Button>
     </CardHeader>
+
+    <!-- Filters Section -->
+    <div v-if="showFilters" class="flex flex-wrap items-center gap-4 p-4 rounded-lg bg-neutral-50 border border-neutral-100">
+      <div class="flex flex-col gap-1.5 w-48">
+        <Label for="filter-status" class="text-xs text-neutral-500 font-medium">Filter by Status</Label>
+        <select
+          id="filter-status"
+          v-model="filterActive"
+          class="h-8 rounded-md border border-neutral-200 bg-white px-2 py-0.5 text-xs outline-hidden focus-visible:ring-2 focus-visible:ring-ring/50 w-full"
+        >
+          <option value="all">All Statuses</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </div>
+
+      <Button variant="ghost" size="sm" class="mt-5 text-neutral-500 text-xs h-8 px-2" @click="resetFilters">
+        Reset
+      </Button>
+    </div>
 
     <CardContent class="p-0 gap-0 overflow-x-auto mt-4">
       <Table>
         <TableHeader>
           <TableRow class="border-neutral-200 border-solid">
             <TableHead class="text-neutral-500 w-12">#</TableHead>
-            <TableHead class="text-neutral-500">Role Name</TableHead>
-            <TableHead class="text-neutral-500">Description</TableHead>
-            <TableHead class="text-neutral-500">Number Of Permissions</TableHead>
+            <TableHead class="text-neutral-500">User</TableHead>
+            <TableHead class="text-neutral-500">Email</TableHead>
+            <TableHead class="text-neutral-500">Bio</TableHead>
+            <TableHead class="text-neutral-500">Status</TableHead>
             <TableHead class="text-right text-neutral-500">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow v-for="(role, index) in roles" :key="role.id" :class="{ 'bg-neutral-100/50': index % 2 !== 0 }"
+          <TableRow v-for="(user, index) in users" :key="user.id" :class="{ 'bg-neutral-100/50': index % 2 !== 0 }"
             class="border-neutral-200 border-solid">
             <TableCell class="text-neutral-500">{{ (currentPage * pageSize) + index + 1 }}</TableCell>
-            <TableCell class="font-medium">{{ role.name }}</TableCell>
-            <TableCell class="text-neutral-500">{{ role.description }}</TableCell>
             <TableCell>
-              <Badge class="border-transparent bg-[#1877F2]/10 text-[#1877F2] hover:bg-[#1877F2]/20">
-                {{ role.permissions.length }}
+              <div class="flex items-center gap-3">
+                <img
+                  :alt="user.fullName"
+                  class="size-8 object-cover rounded-full bg-neutral-100"
+                  :src="user.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user.fullName)}`"
+                />
+                <span class="font-medium text-neutral-900">{{ user.fullName }}</span>
+              </div>
+            </TableCell>
+            <TableCell class="text-neutral-600 font-mono text-xs">{{ user.email }}</TableCell>
+            <TableCell class="text-neutral-500 max-w-[240px] truncate" :title="user.bio || ''">
+              {{ user.bio || '—' }}
+            </TableCell>
+            <TableCell>
+              <Badge
+                :class="user.isActive ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200' : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'"
+                variant="secondary"
+              >
+                {{ user.isActive ? 'Active' : 'Inactive' }}
               </Badge>
             </TableCell>
             <TableCell class="text-right">
               <div class="flex justify-end items-center gap-2">
-
-                <Button variant="ghost" size="icon" class="size-8 text-[#1877F2]" @click="openUpdateModal(role)">
+                <Button variant="ghost" size="icon" class="size-8 text-[#1877F2]" @click="openUpdateModal(user)">
                   <Pencil class="size-4" />
                 </Button>
 
-                <ConfirmDialog @confirm="handleDeleteRole(role.id)">
+                <ConfirmDialog @confirm="handleDeleteUser(user.id)">
                   <Button variant="ghost" size="icon" class="size-8 text-[#e7000b]">
                     <Trash2 class="size-4" />
                   </Button>
                 </ConfirmDialog>
               </div>
+            </TableCell>
+          </TableRow>
+          <TableRow v-if="users.length === 0">
+            <TableCell colspan="6" class="text-center py-8 text-neutral-400">
+              No users found matching search criteria.
             </TableCell>
           </TableRow>
         </TableBody>
@@ -91,9 +131,10 @@
     </CardFooter>
   </Card>
 
+  <!-- Edit User Modal -->
   <div v-if="isUpdateModalOpen"
     class="bg-[#1a2236]/60 fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm">
-    <form @submit.prevent="handleUpdateRole">
+    <form @submit.prevent="handleUpdateUser">
       <Card class="shadow-2xl p-6 gap-6 w-[520px] relative">
         <Button type="button" variant="ghost" size="icon"
           class="absolute top-4 right-4 size-8 text-neutral-500 hover:text-neutral-950"
@@ -102,19 +143,18 @@
         </Button>
 
         <CardHeader class="p-0 flex flex-col gap-1 pr-8">
-          <h2 class="font-semibold text-lg leading-7">Update Role</h2>
-          <p class="text-neutral-500 text-sm leading-5">Update the details of this role.</p>
+          <h2 class="font-semibold text-lg leading-7">Update User</h2>
+          <p class="text-neutral-500 text-sm leading-5">Update user profile details.</p>
         </CardHeader>
 
         <CardContent class="flex p-0 flex-col gap-4 mt-6">
           <div class="flex flex-col gap-2">
-            <Label for="update-rname">Role Name</Label>
-            <Input id="update-rname" placeholder="e.g. Content Manager" v-model="updateForm.name" />
+            <Label for="update-fname">Full Name</Label>
+            <Input id="update-fname" placeholder="e.g. John Doe" v-model="updateForm.fullName" required />
           </div>
           <div class="flex flex-col gap-2">
-            <Label for="update-rdesc">Description</Label>
-            <Textarea id="update-rdesc" placeholder="Short description of this role..." class="min-h-20"
-              v-model="updateForm.description" />
+            <Label for="update-bio">Bio</Label>
+            <Textarea id="update-bio" placeholder="Tell us about yourself..." class="min-h-20" v-model="updateForm.bio" />
           </div>
         </CardContent>
 
@@ -147,27 +187,28 @@ import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-import type { IRole } from '@/interfaces/roles';
+import type { IUser } from '@/interfaces/users';
 
 defineProps<{
-  roles: IRole[]
+  users: IUser[]
 }>();
 
 const store = useStore();
 
-const isUpdateModalOpen = ref(false);
-const updateForm = ref({
-  id: 0,
-  name: '',
-  description: ''
-});
-
+const showFilters = ref(false);
+const filterActive = ref<string>('all');
 const searchKeyword = ref('');
 const currentPage = ref(0);
 const pageSize = ref(10);
 
+const isUpdateModalOpen = ref(false);
+const updateForm = ref({
+  id: 0,
+  fullName: '',
+  bio: ''
+});
 
-const totalPages = computed(() => store.state.roles.totalPages || 1);
+const totalPages = computed(() => store.state.users.totalPages || 1);
 
 const visiblePages = computed(() => {
   const pages = [];
@@ -187,61 +228,78 @@ const visiblePages = computed(() => {
   return pages;
 });
 
-const fetchRolesData = () => {
-  store.dispatch('roles/findRolesAction', {
-    name: searchKeyword.value,
+const fetchUsersData = () => {
+  const params: any = {
     page: currentPage.value,
     size: pageSize.value
-  });
+  };
+
+  if (searchKeyword.value.trim()) {
+    params.fullName = searchKeyword.value.trim();
+  }
+
+  if (filterActive.value !== 'all') {
+    params.isActive = filterActive.value === 'active';
+  }
+
+  store.dispatch('users/findUsersAction', params);
 };
 
 const changePage = (newPage: number) => {
   if (newPage >= 0 && newPage < totalPages.value) {
     currentPage.value = newPage;
-    fetchRolesData();
+    fetchUsersData();
   }
 };
 
-// Reset to page 0 whenever they type a new search term
-watch(searchKeyword, () => {
+const resetFilters = () => {
+  filterActive.value = 'all';
+  searchKeyword.value = '';
   currentPage.value = 0;
-  fetchRolesData();
+  fetchUsersData();
+};
+
+watch([searchKeyword, filterActive], () => {
+  currentPage.value = 0;
+  fetchUsersData();
 });
 
-const openUpdateModal = (role: IRole) => {
+const openUpdateModal = (user: IUser) => {
   updateForm.value = {
-    id: role.id,
-    name: role.name,
-    description: role.description
+    id: user.id,
+    fullName: user.fullName,
+    bio: user.bio || ''
   };
   isUpdateModalOpen.value = true;
 };
 
-const handleUpdateRole = async () => {
+const handleUpdateUser = async () => {
   try {
-    await store.dispatch('roles/updateRoleAction', {
+    await store.dispatch('users/updateUserAction', {
       id: updateForm.value.id,
-      name: updateForm.value.name,
-      description: updateForm.value.description
+      fullName: updateForm.value.fullName,
+      bio: updateForm.value.bio
     });
 
     isUpdateModalOpen.value = false;
-    fetchRolesData();
-    toast.success("Role updated successfully.");
-  } catch {
-    toast.error("Failed to update role. Please try again.");
+    fetchUsersData();
+    toast.success("User profile updated successfully.");
+  } catch (error: any) {
+    const errorMsg = error?.response?.data?.message || 'Failed to update user.';
+    toast.error(errorMsg);
   }
 };
 
-const handleDeleteRole = async (id: number) => {
+const handleDeleteUser = async (id: number) => {
   try {
-    await store.dispatch('roles/deleteRoleAction', id);
-    fetchRolesData();
-    toast.success("Role deleted successfully.");
-  } catch {
-    toast.error("Failed to delete role. Please try again later.");
+    await store.dispatch('users/deleteUserAction', id);
+    fetchUsersData();
+    toast.success("User deleted successfully.");
+  } catch (error: any) {
+    const errorMsg = error?.response?.data?.message || 'Failed to delete user.';
+    toast.error(errorMsg);
   }
-}
+};
 </script>
 
-<style></style>
+<style scoped></style>

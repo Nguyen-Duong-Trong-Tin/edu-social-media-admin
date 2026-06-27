@@ -1,3 +1,4 @@
+import type { ISpecification } from ".";
 import type { IPermission } from "./permissions";
 
 export interface IRole {
@@ -9,7 +10,7 @@ export interface IRole {
   updatedAt: Date;
 }
 
-export interface IRolesFind {
+export interface IRolesFind extends ISpecification {
   name: string;
   description: string;
 }
@@ -26,4 +27,9 @@ export interface IRoleUpdate {
 
 export interface IRolesState {
   roles: IRole[];
+  totalPages: number;
+}
+
+export interface IRoleReplacePermissions {
+  permissionIds: number[];
 }
