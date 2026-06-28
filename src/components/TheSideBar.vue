@@ -39,7 +39,7 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
 import {
-  BookOpen, FileText, Globe, GraduationCap,
+  BookOpen, ClipboardList, FileText, Globe, GraduationCap,
   Layers,
   LayoutDashboard,
   Network,
@@ -62,7 +62,8 @@ const iconMap: Record<string, any> = {
   Network,
   Globe,
   Layers,
-  UserPen
+  UserPen,
+  ClipboardList
 };
 
 const settingSidebarLinks = computed(() => store.state.settingSidebarLinks.settingSidebarLinks);

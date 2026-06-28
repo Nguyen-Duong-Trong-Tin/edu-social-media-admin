@@ -9,6 +9,7 @@ import GroupTopicsView from "@/views/groupTopics/GroupTopicsView.vue";
 import GroupsView from "@/views/groups/GroupsView.vue";
 import GroupArticlesView from "@/views/groupArticles/GroupArticlesView.vue";
 import UserArticlesView from "@/views/userArticles/UserArticlesView.vue";
+import GroupTasksView from "@/views/groupTasks/GroupTasksView.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
@@ -70,6 +71,11 @@ const router = createRouter({
       path: "/user-articles",
       name: "user-articles",
       component: UserArticlesView,
+    },
+    {
+      path: "/group-tasks",
+      name: "group-tasks",
+      component: GroupTasksView,
     },
   ],
 });
