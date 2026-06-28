@@ -40,9 +40,10 @@
 import { useRoute } from 'vue-router';
 import {
   BookOpen, FileText, Globe, GraduationCap,
+  Layers,
   LayoutDashboard,
   Network,
-  Settings, Shield, UserCog, Users
+  Settings, Shield, UserCog, UserPen, Users
 } from "lucide-vue-next";
 import { computed } from 'vue';
 import { useStore } from 'vuex';
@@ -59,7 +60,9 @@ const iconMap: Record<string, any> = {
   FileText,
   Settings,
   Network,
-  Globe
+  Globe,
+  Layers,
+  UserPen
 };
 
 const settingSidebarLinks = computed(() => store.state.settingSidebarLinks.settingSidebarLinks);

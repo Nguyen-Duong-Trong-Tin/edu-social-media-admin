@@ -7,6 +7,8 @@ import AccountsView from "@/views/accounts/AccountsView.vue";
 import UsersView from "@/views/users/UsersView.vue";
 import GroupTopicsView from "@/views/groupTopics/GroupTopicsView.vue";
 import GroupsView from "@/views/groups/GroupsView.vue";
+import GroupArticlesView from "@/views/groupArticles/GroupArticlesView.vue";
+import UserArticlesView from "@/views/userArticles/UserArticlesView.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
@@ -58,6 +60,16 @@ const router = createRouter({
       path: "/groups",
       name: "groups",
       component: GroupsView,
+    },
+    {
+      path: "/group-articles",
+      name: "group-articles",
+      component: GroupArticlesView,
+    },
+    {
+      path: "/user-articles",
+      name: "user-articles",
+      component: UserArticlesView,
     },
   ],
 });

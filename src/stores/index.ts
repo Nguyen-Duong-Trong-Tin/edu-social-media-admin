@@ -6,6 +6,8 @@ import accounts from "./modules/accounts";
 import users from "./modules/users";
 import groupTopics from "./modules/groupTopics";
 import groups from "./modules/groups";
+import groupArticles from "./modules/groupArticles";
+import userArticles from "./modules/userArticles";
 
 export default createStore({
   state: {},
@@ -19,6 +21,8 @@ export default createStore({
     accounts,
     users,
     groupTopics,
-    groups
+    groups,
+    groupArticles,
+    userArticles
   },
 });
