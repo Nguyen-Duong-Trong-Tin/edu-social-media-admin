@@ -10,6 +10,7 @@ import GroupsView from "@/views/groups/GroupsView.vue";
 import GroupArticlesView from "@/views/groupArticles/GroupArticlesView.vue";
 import UserArticlesView from "@/views/userArticles/UserArticlesView.vue";
 import GroupTasksView from "@/views/groupTasks/GroupTasksView.vue";
+import GroupTaskSubmissionsView from "@/views/groupTaskSubmissions/GroupTaskSubmissionsView.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
@@ -76,6 +77,11 @@ const router = createRouter({
       path: "/group-tasks",
       name: "group-tasks",
       component: GroupTasksView,
+    },
+    {
+      path: "/group-task-submissions",
+      name: "group-task-submissions",
+      component: GroupTaskSubmissionsView,
     },
   ],
 });
