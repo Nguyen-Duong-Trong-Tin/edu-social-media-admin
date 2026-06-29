@@ -11,6 +11,7 @@ import GroupArticlesView from "@/views/groupArticles/GroupArticlesView.vue";
 import UserArticlesView from "@/views/userArticles/UserArticlesView.vue";
 import GroupTasksView from "@/views/groupTasks/GroupTasksView.vue";
 import GroupTaskSubmissionsView from "@/views/groupTaskSubmissions/GroupTaskSubmissionsView.vue";
+import ChatRoomsView from "@/views/chatRooms/ChatRoomsView.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
@@ -82,6 +83,11 @@ const router = createRouter({
       path: "/group-task-submissions",
       name: "group-task-submissions",
       component: GroupTaskSubmissionsView,
+    },
+    {
+      path: "/chat-rooms",
+      name: "chat-rooms",
+      component: ChatRoomsView,
     },
   ],
 });

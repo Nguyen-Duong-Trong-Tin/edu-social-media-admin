@@ -42,6 +42,7 @@ import {
   BookOpen, ClipboardCheck, ClipboardList, FileText, Globe, GraduationCap,
   Layers,
   LayoutDashboard,
+  MessageCircle,
   Network,
   Settings, Shield, UserCog, UserPen, Users
 } from "lucide-vue-next";
@@ -64,7 +65,8 @@ const iconMap: Record<string, any> = {
   Layers,
   UserPen,
   ClipboardList,
-  ClipboardCheck
+  ClipboardCheck,
+  MessageCircle
 };
 
 const settingSidebarLinks = computed(() => store.state.settingSidebarLinks.settingSidebarLinks);
