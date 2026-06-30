@@ -12,6 +12,7 @@ import UserArticlesView from "@/views/userArticles/UserArticlesView.vue";
 import GroupTasksView from "@/views/groupTasks/GroupTasksView.vue";
 import GroupTaskSubmissionsView from "@/views/groupTaskSubmissions/GroupTaskSubmissionsView.vue";
 import ChatRoomsView from "@/views/chatRooms/ChatRoomsView.vue";
+import ChatMessagesView from "@/views/chatMessages/ChatMessagesView.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
@@ -88,6 +89,11 @@ const router = createRouter({
       path: "/chat-rooms",
       name: "chat-rooms",
       component: ChatRoomsView,
+    },
+    {
+      path: "/chat-messages",
+      name: "chat-messages",
+      component: ChatMessagesView,
     },
   ],
 });

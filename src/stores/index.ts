@@ -11,6 +11,7 @@ import userArticles from "./modules/userArticles";
 import groupTasks from "./modules/groupTasks";
 import groupTaskSubmissions from "./modules/groupTaskSubmissions";
 import chatRooms from "./modules/chatRooms";
+import chatMessages from "./modules/chatMessages";
 
 export default createStore({
   state: {},
@@ -29,6 +30,7 @@ export default createStore({
     userArticles,
     groupTasks,
     groupTaskSubmissions,
-    chatRooms
+    chatRooms,
+    chatMessages
   },
 });

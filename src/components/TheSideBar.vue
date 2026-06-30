@@ -44,7 +44,7 @@ import {
   LayoutDashboard,
   MessageCircle,
   Network,
-  Settings, Shield, UserCog, UserPen, Users
+  Settings, Shield, UserCog, UserPen, Users, Send
 } from "lucide-vue-next";
 import { computed } from 'vue';
 import { useStore } from 'vuex';
@@ -66,7 +66,8 @@ const iconMap: Record<string, any> = {
   UserPen,
   ClipboardList,
   ClipboardCheck,
-  MessageCircle
+  MessageCircle,
+  Send
 };
 
 const settingSidebarLinks = computed(() => store.state.settingSidebarLinks.settingSidebarLinks);
