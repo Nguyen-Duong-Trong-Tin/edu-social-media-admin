@@ -1,29 +1,20 @@
 <template>
-  <div class="flex h-screen w-full bg-white text-neutral-950 overflow-hidden">
-
-    <TheSideBar />
-
-    <div class="flex flex-col flex-1 h-full min-w-0">
-
-      <TheHeader />
-
-      <main class="flex-1 bg-[#f4f6f9] overflow-y-auto overflow-x-hidden">
-        <router-view />
-
-        <Toaster position="bottom-right" richColors />
-      </main>
-
-    </div>
-
-  </div>
+  <LayoutAuth v-if="isAuthLayout" />
+  <LayoutDefault v-else />
 </template>
 
 <script setup lang="ts">
 import 'vue-sonner/style.css';
-import { Toaster } from "vue-sonner";
 
-import TheSideBar from "@/components/TheSideBar.vue";
-import TheHeader from "@/components/TheHeader.vue";
+import { useRoute } from 'vue-router';
+import { computed } from 'vue';
+import LayoutAuth from './layouts/LayoutAuth.vue';
+import LayoutDefault from './layouts/LayoutDefault.vue';
+
+const route = useRoute();
+
+const isAuthLayout = computed(() => route.fullPath.startsWith('/auth'));
+console.log(isAuthLayout);
 
 </script>
 

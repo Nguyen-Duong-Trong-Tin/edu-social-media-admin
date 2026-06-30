@@ -14,6 +14,7 @@ import GroupTaskSubmissionsView from "@/views/groupTaskSubmissions/GroupTaskSubm
 import ChatRoomsView from "@/views/chatRooms/ChatRoomsView.vue";
 import ChatMessagesView from "@/views/chatMessages/ChatMessagesView.vue";
 import { createRouter, createWebHistory } from "vue-router";
+import LoginView from "@/views/login/LoginView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,6 +23,11 @@ const router = createRouter({
       path: "/",
       name: "dashboard",
       component: DashboardView,
+    },
+    {
+      path: "/auth/login",
+      name: "Login",
+      component: LoginView,
     },
     {
       path: "/roles",
