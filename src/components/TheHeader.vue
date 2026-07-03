@@ -13,9 +13,9 @@
       <div class="flex items-center gap-2 cursor-pointer">
         <img alt="Admin" class="size-9 object-cover rounded-full"
           src="https://images.unsplash.com/photo-1714750977930-e7a7f4611257?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400" />
-        <div class="leading-tight flex flex-col">
-          <span class="font-semibold text-sm leading-5">David Lee</span>
-          <span class="text-neutral-500 text-xs leading-4">Administrator</span>
+        <div class="leading-tight flex flex-col" v-if="loggedInAccount">
+          <span class="font-semibold text-sm leading-5">{{ loggedInAccount.fullName }}</span>
+          <span class="text-neutral-500 text-xs leading-4">{{ loggedInAccount.role.name }}</span>
         </div>
         <ChevronDown class="size-4 text-neutral-500" />
       </div>
@@ -28,5 +28,11 @@ import {
 } from "lucide-vue-next";
 
 import { Input } from "@/components/ui/input";
+import { computed } from "vue";
+import { useStore } from "vuex";
+
+const store = useStore();
+
+const loggedInAccount = computed(() => store.state.accounts.loggedInAccount);
 </script>
 <style></style>

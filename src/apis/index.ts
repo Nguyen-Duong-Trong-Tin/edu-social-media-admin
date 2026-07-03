@@ -6,9 +6,14 @@ const axiosApi = axios.create({
   baseURL: configs.API_BASE_URL,
 });
 
+import { getCookie } from "@/utils/cookie";
+
 axiosApi.interceptors.request.use(
   function (config) {
-    config.headers["accessToken"] = "abc";
+    const token = getCookie("accessToken");
+    if (token) {
+      config.headers["Authorization"] = "Bearer " + token;
+    }
     return config;
   },
   function (error) {

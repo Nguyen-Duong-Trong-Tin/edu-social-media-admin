@@ -75,17 +75,50 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { toast } from 'vue-sonner'
 import { GraduationCap, Mail, Lock, Eye, EyeOff } from 'lucide-vue-next'
+
+import { loginAuthApi } from '@/apis/auth'
+import { setCookie } from '@/utils/cookie'
+import type { IResponse } from '@/interfaces'
+import type {  IAuthLoginResponse } from '@/interfaces/auth'
+
+const router = useRouter()
 
 const userName = ref('')
 const password = ref('')
 const showPassword = ref(false)
 
-const handleLogin = () => {
-  console.log('Login attempt:', {
-    userName: userName.value,
-    password: password.value,
-  })
+const handleLogin = async () => {
+  try {
+    const response: IResponse<IAuthLoginResponse> = await loginAuthApi({
+      userName: userName.value,
+      password: password.value,
+    });
+
+    if (response.status !== 200) {
+      toast.error("Invalid credentials!");
+      return;
+    }
+
+    const { data: { accessToken, refreshToken, account } } = response;
+
+    setCookie("accessToken", accessToken, 7);
+    setCookie("refreshToken", refreshToken, 7);
+    setCookie("userName", account.userName, 7);
+    setCookie("role", account.role.name, 7);
+
+    router.push("/");
+  } catch (error) {
+    const myError = error as { status: number };
+    if (myError.status === 400) {
+      toast.error("Invalid credentials!");
+      return;
+    }
+
+    toast.error("Something went wrong!")
+  }
 }
 </script>
 

@@ -195,7 +195,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed, onMounted } from "vue";
+import { ref, watch, computed } from "vue";
 import { useStore } from "vuex";
 import { toast } from "vue-sonner";
 import {
@@ -296,9 +296,6 @@ watch([searchKeyword, filterRole, filterActive], () => {
   fetchAccountsData();
 });
 
-onMounted(() => {
-  store.dispatch('roles/findRolesAction', { size: 100 });
-});
 
 const openUpdateModal = (account: IAccount) => {
   updateForm.value = {

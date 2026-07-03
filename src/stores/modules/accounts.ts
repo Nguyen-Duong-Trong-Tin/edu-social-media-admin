@@ -8,6 +8,7 @@ const state = (): IAccountsState => {
   return {
     accounts: [],
     totalPages: 0,
+    loggedInAccount: null,
   };
 };
 
@@ -17,6 +18,9 @@ const mutations = {
   setAccountsMutation(state: IAccountsState, data: IResponseSpecification<IAccount[]>) {
     state.accounts = data.items;
     state.totalPages = data.totalPages;
+  },
+  setLoggedInAccountMutation(state: IAccountsState, account: IAccount) {
+    state.loggedInAccount = account;
   }
 };
 
@@ -24,6 +28,10 @@ const actions = {
   async findAccountsAction(context: ActionContext<IAccountsState, IRootState>, params: IAccountsFind) {
     const { data } = await findAccountsApi(params);
     context.commit("setAccountsMutation", data);
+  },
+  async findLoggedInAccountAction(context: ActionContext<IAccountsState, IRootState>) {
+    const { data } = await findAccountsApi({ page: 0, size: 1 });
+    context.commit("setLoggedInAccountMutation", data.items[0]);
   },
   async createAccountAction(context: ActionContext<IAccountsState, IRootState>, payload: IAccountCreate) {
     const response = await createAccountApi(payload);

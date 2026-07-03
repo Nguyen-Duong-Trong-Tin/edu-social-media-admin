@@ -9,8 +9,6 @@
 
       <main class="flex-1 bg-[#f4f6f9] overflow-y-auto overflow-x-hidden">
         <router-view />
-
-        <Toaster position="bottom-right" richColors />
       </main>
 
     </div>
@@ -20,7 +18,14 @@
 <script setup lang="ts">
 import TheHeader from '@/components/TheHeader.vue';
 import TheSideBar from '@/components/TheSideBar.vue';
+import { useStore } from 'vuex';
+import { computed } from 'vue';
 
-import { Toaster } from 'vue-sonner';
+const store = useStore();
+
+const loggedInAccount = computed(() => store.state.accounts.loggedInAccount);
+if (!loggedInAccount.value) {
+  store.dispatch("accounts/findLoggedInAccountAction");
+}
 </script>
 <style></style>

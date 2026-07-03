@@ -15,6 +15,8 @@ import ChatRoomsView from "@/views/chatRooms/ChatRoomsView.vue";
 import ChatMessagesView from "@/views/chatMessages/ChatMessagesView.vue";
 import { createRouter, createWebHistory } from "vue-router";
 import LoginView from "@/views/login/LoginView.vue";
+import { deleteCookie, getCookie, setCookie } from "@/utils/cookie";
+import { meAuthApi, refreshTokenAuthApi, verifyTokenAuthApi } from "@/apis/auth";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -102,6 +104,44 @@ const router = createRouter({
       component: ChatMessagesView,
     },
   ],
+});
+
+router.beforeEach(async (to, from, next) => {
+  const accessToken = getCookie("accessToken");
+  const passedFullPaths = ["/auth/login"];
+
+  if (passedFullPaths.includes(to.path)) {
+    return next();
+  }
+
+  if (!accessToken) {
+    return next("/auth/login");
+  }
+
+  try {
+    await verifyTokenAuthApi();
+  } catch {
+    const refreshToken = getCookie("refreshToken");
+    if (!refreshToken) {
+      return next("/auth/login");
+    }
+
+    try {
+      const refreshTokenResponse = await refreshTokenAuthApi({ accessToken, refreshToken });
+      const newAccessToken = refreshTokenResponse.data.accessToken;
+
+      setCookie("accessToken", newAccessToken, 7);
+    } catch {
+      deleteCookie("accessToken");
+      deleteCookie("refreshToken");
+      deleteCookie("userName");
+      deleteCookie("role");
+
+      return next("/auth/login");
+    }
+  }
+
+  return next();
 });
 
 export default router;

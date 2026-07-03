@@ -19,6 +19,7 @@ const accounts = computed<IAccount[]>(() => store.state.accounts.accounts);
 
 onMounted(() => {
   store.dispatch("accounts/findAccountsAction");
+  store.dispatch("roles/findRolesAction", { size: 100 });
 });
 </script>
 

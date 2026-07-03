@@ -73,7 +73,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { toast } from 'vue-sonner';
 import {
@@ -95,10 +95,6 @@ const password = ref('');
 const roleId = ref<number | ''>('');
 
 const roles = computed<IRole[]>(() => store.state.roles.roles);
-
-onMounted(() => {
-  store.dispatch('roles/findRolesAction', { size: 100 });
-});
 
 const handleCreateAccount = async () => {
   if (roleId.value === '') {

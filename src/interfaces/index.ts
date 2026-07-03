@@ -11,3 +11,10 @@ export interface IResponseSpecification<T> {
   totalPages: number;
   items: T;
 }
+
+export interface IResponse<T> {
+  status: number;
+  message: string;
+  errors: string[];
+  data: T;
+}

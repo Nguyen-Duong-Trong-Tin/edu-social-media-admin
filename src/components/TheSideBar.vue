@@ -28,9 +28,9 @@
     <div class="rounded-lg bg-white/5 flex mt-auto p-3 items-center gap-3">
       <img alt="Admin" class="size-9 object-cover rounded-full"
         src="https://images.unsplash.com/photo-1714750977930-e7a7f4611257?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400" />
-      <div class="leading-tight flex flex-col">
-        <span class="font-semibold text-xs leading-4">David Lee</span>
-        <span class="text-white/50 text-[11px]">Super Admin</span>
+      <div class="leading-tight flex flex-col" v-if="loggedInAccount">
+        <span class="font-semibold text-xs leading-4">{{ loggedInAccount.fullName }}</span>
+        <span class="text-white/50 text-[11px]">{{ loggedInAccount.role.name }}</span>
       </div>
     </div>
   </aside>
@@ -71,6 +71,8 @@ const iconMap: Record<string, any> = {
 };
 
 const settingSidebarLinks = computed(() => store.state.settingSidebarLinks.settingSidebarLinks);
+
+const loggedInAccount = computed(() => store.state.accounts.loggedInAccount);
 
 const isRouteActive = (path: string, exact: boolean) => {
   if (exact) {

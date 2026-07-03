@@ -35,4 +35,5 @@ export interface IAccountUpdate {
 export interface IAccountsState {
   accounts: IAccount[];
   totalPages: number;
+  loggedInAccount: IAccount | null;
 }
