@@ -6,8 +6,8 @@ export interface IChatMessage {
   images: string | null;
   videos: string | null;
   materials: string | null;
-  userId: string;
-  chatRoomId: string;
+  userId: number;
+  chatRoomId: number;
   createdAt: string;
   updatedAt: string;
 }

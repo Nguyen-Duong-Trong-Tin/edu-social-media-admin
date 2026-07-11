@@ -92,7 +92,7 @@
               </Badge>
             </TableCell>
             <TableCell>
-              <span class="text-neutral-900 text-xs font-medium">{{ room.group?.name || '—' }}</span>
+              <span class="text-neutral-900 text-xs font-medium">{{ getGroupName(room.groupId) }}</span>
             </TableCell>
             <TableCell>
               <Badge
@@ -283,6 +283,12 @@ const updateForm = ref<{
 const groups = computed<IGroup[]>(() => store.state.groups.groups);
 const totalPages = computed(() => store.state.chatRooms.totalPages || 1);
 
+const getGroupName = (groupId: number | string | undefined | null) => {
+  if (!groupId) return '—';
+  const g = groups.value.find(group => String(group.id) === String(groupId));
+  return g ? g.name : '—';
+};
+
 const visiblePages = computed(() => {
   const pages = [];
   const total = totalPages.value;
@@ -356,7 +362,7 @@ const openUpdateModal = (room: IChatRoom) => {
     id: room.id,
     name: room.name,
     type: room.type,
-    groupId: room.group?.id || '',
+    groupId: room.groupId || '',
     isActive: room.isActive
   };
   isUpdateModalOpen.value = true;

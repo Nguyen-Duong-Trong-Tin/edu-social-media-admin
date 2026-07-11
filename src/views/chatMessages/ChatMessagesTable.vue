@@ -261,19 +261,19 @@ const chatRooms = computed<IChatRoom[]>(() => store.state.chatRooms.chatRooms);
 const users = computed<IUser[]>(() => store.state.users.users);
 const totalPages = computed(() => store.state.chatMessages.totalPages || 1);
 
-const getUserName = (userId: string | undefined) => {
+const getUserName = (userId: number | undefined) => {
   if (!userId) return 'N/A';
   const u = users.value.find(user => String(user.id) === String(userId));
   return u ? u.fullName : 'N/A';
 };
 
-const getUserAvatar = (userId: string | undefined) => {
+const getUserAvatar = (userId: number | undefined) => {
   if (!userId) return '';
   const u = users.value.find(user => String(user.id) === String(userId));
   return u?.avatar || '';
 };
 
-const getChatRoomName = (chatRoomId: string | undefined) => {
+const getChatRoomName = (chatRoomId: number | undefined) => {
   if (!chatRoomId) return 'N/A';
   const room = chatRooms.value.find(r => String(r.id) === String(chatRoomId));
   return room ? room.name : 'N/A';
@@ -347,8 +347,8 @@ const openUpdateModal = (msg: IChatMessage) => {
   updateForm.value = {
     id: msg.id,
     content: msg.content || '',
-    chatRoomId: msg.chatRoomId ? Number(msg.chatRoomId) : '',
-    userId: msg.userId ? Number(msg.userId) : ''
+    chatRoomId: msg.chatRoomId || '',
+    userId: msg.userId || ''
   };
   isUpdateModalOpen.value = true;
 };

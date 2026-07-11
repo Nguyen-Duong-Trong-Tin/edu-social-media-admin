@@ -1,5 +1,4 @@
 import type { ISpecification } from ".";
-import type { IGroup } from "./groups";
 
 export type ChatRoomType = 'FRIEND' | 'GROUP';
 
@@ -10,7 +9,7 @@ export interface IChatRoom {
   type: ChatRoomType;
   avatar: string | null;
   isActive: boolean;
-  group: IGroup | null;
+  groupId: number | null;
   createdAt: string;
   updatedAt: string;
 }
