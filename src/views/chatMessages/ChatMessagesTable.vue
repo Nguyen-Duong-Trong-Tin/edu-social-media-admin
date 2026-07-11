@@ -64,11 +64,11 @@
             <TableCell>
               <div class="flex items-center gap-2">
                 <img
-                  :alt="msg.user?.fullName || 'User'"
+                  :alt="getUserName(msg.userId)"
                   class="size-6 object-cover rounded-full bg-neutral-100"
-                  :src="msg.user?.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(msg.user?.fullName || 'User')}`"
+                  :src="getUserAvatar(msg.userId) || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(getUserName(msg.userId))}`"
                 />
-                <span class="text-neutral-900 text-xs font-medium">{{ msg.user?.fullName || 'N/A' }}</span>
+                <span class="text-neutral-900 text-xs font-medium">{{ getUserName(msg.userId) }}</span>
               </div>
             </TableCell>
             <TableCell class="max-w-[320px]">
@@ -78,7 +78,7 @@
             </TableCell>
             <TableCell>
               <Badge variant="outline" class="border-neutral-400 text-neutral-600">
-                {{ msg.chatRoom?.name || 'N/A' }}
+                {{ getChatRoomName(msg.chatRoomId) }}
               </Badge>
             </TableCell>
             <TableCell>
@@ -261,6 +261,24 @@ const chatRooms = computed<IChatRoom[]>(() => store.state.chatRooms.chatRooms);
 const users = computed<IUser[]>(() => store.state.users.users);
 const totalPages = computed(() => store.state.chatMessages.totalPages || 1);
 
+const getUserName = (userId: string | undefined) => {
+  if (!userId) return 'N/A';
+  const u = users.value.find(user => String(user.id) === String(userId));
+  return u ? u.fullName : 'N/A';
+};
+
+const getUserAvatar = (userId: string | undefined) => {
+  if (!userId) return '';
+  const u = users.value.find(user => String(user.id) === String(userId));
+  return u?.avatar || '';
+};
+
+const getChatRoomName = (chatRoomId: string | undefined) => {
+  if (!chatRoomId) return 'N/A';
+  const room = chatRooms.value.find(r => String(r.id) === String(chatRoomId));
+  return room ? room.name : 'N/A';
+};
+
 const visiblePages = computed(() => {
   const pages = [];
   const total = totalPages.value;
@@ -329,8 +347,8 @@ const openUpdateModal = (msg: IChatMessage) => {
   updateForm.value = {
     id: msg.id,
     content: msg.content || '',
-    chatRoomId: msg.chatRoom?.id || '',
-    userId: msg.user?.id || ''
+    chatRoomId: msg.chatRoomId ? Number(msg.chatRoomId) : '',
+    userId: msg.userId ? Number(msg.userId) : ''
   };
   isUpdateModalOpen.value = true;
 };

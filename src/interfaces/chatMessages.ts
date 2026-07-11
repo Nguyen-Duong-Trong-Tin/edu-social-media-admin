@@ -1,6 +1,4 @@
 import type { ISpecification } from ".";
-import type { IChatRoom } from "./chatRooms";
-import type { IUser } from "./users";
 
 export interface IChatMessage {
   id: number;
@@ -8,8 +6,8 @@ export interface IChatMessage {
   images: string | null;
   videos: string | null;
   materials: string | null;
-  user: IUser;
-  chatRoom: IChatRoom;
+  userId: string;
+  chatRoomId: string;
   createdAt: string;
   updatedAt: string;
 }
