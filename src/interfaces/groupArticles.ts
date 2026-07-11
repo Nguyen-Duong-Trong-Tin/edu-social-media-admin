@@ -1,5 +1,4 @@
 import type { ISpecification } from ".";
-import type { IGroup } from "./groups";
 
 export interface IGroupArticle {
   id: number;
@@ -9,7 +8,7 @@ export interface IGroupArticle {
   images: string | null;
   videos: string | null;
   isActive: boolean;
-  group: IGroup;
+  groupId: number;
   createdAt: string;
   updatedAt: string;
 }
