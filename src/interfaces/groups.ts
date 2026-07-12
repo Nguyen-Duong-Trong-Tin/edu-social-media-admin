@@ -1,5 +1,4 @@
 import type { ISpecification } from ".";
-import type { IGroupTopic } from "./groupTopics";
 
 export interface IGroup {
   id: number;
@@ -10,7 +9,7 @@ export interface IGroup {
   avatar: string | null;
   coverPhoto: string | null;
   isActive: boolean;
-  groupTopic: IGroupTopic;
+  groupTopicId: number;
   createdAt: string;
   updatedAt: string;
 }

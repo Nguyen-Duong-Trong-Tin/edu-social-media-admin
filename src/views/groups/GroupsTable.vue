@@ -75,7 +75,7 @@
             </TableCell>
             <TableCell>
               <Badge class="border-transparent bg-[#1877F2]/10 text-[#1877F2] hover:bg-[#1877F2]/20">
-                {{ group.groupTopic?.name || 'N/A' }}
+                {{ getGroupTopicName(group.groupTopicId) }}
               </Badge>
             </TableCell>
             <TableCell class="max-w-[280px]">
@@ -269,6 +269,12 @@ const updateForm = ref({
 const groupTopics = computed<IGroupTopic[]>(() => store.state.groupTopics.groupTopics);
 const totalPages = computed(() => store.state.groups.totalPages || 1);
 
+const getGroupTopicName = (groupTopicId: number | string | undefined | null) => {
+  if (!groupTopicId) return 'N/A';
+  const topic = groupTopics.value.find(t => String(t.id) === String(groupTopicId));
+  return topic ? topic.name : 'N/A';
+};
+
 const visiblePages = computed(() => {
   const pages = [];
   const total = totalPages.value;
@@ -338,7 +344,7 @@ const openUpdateModal = (group: IGroup) => {
     name: group.name,
     description: group.description || '',
     invitation: group.invitation || '',
-    groupTopicId: group.groupTopic?.id || 0,
+    groupTopicId: group.groupTopicId || 0,
     isActive: group.isActive
   };
   isUpdateModalOpen.value = true;
