@@ -82,17 +82,17 @@
                 <span class="text-neutral-500 text-[11px] font-mono leading-none mt-0.5">{{ sub.slug }}</span>
               </div>
             </TableCell>
-            <TableCell>
-              <span class="text-neutral-900 text-xs font-medium">{{ sub.groupTask?.name || 'N/A' }}</span>
+             <TableCell>
+              <span class="text-neutral-900 text-xs font-medium">{{ getGroupTaskName(sub.groupTaskId) }}</span>
             </TableCell>
             <TableCell>
               <div class="flex items-center gap-2">
                 <img
-                  :alt="sub.user?.fullName || 'User'"
+                  :alt="getUserName(sub.userId)"
                   class="size-6 object-cover rounded-full bg-neutral-100"
-                  :src="sub.user?.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(sub.user?.fullName || 'User')}`"
+                  :src="getUserAvatar(sub.userId) || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(getUserName(sub.userId))}`"
                 />
-                <span class="text-neutral-900 text-xs font-medium">{{ sub.user?.fullName || 'N/A' }}</span>
+                <span class="text-neutral-900 text-xs font-medium">{{ getUserName(sub.userId) }}</span>
               </div>
             </TableCell>
             <TableCell class="max-w-[200px]">
@@ -310,6 +310,24 @@ const getGroupName = (groupId: number | string | undefined | null) => {
   const g = groups.value.find(group => String(group.id) === String(groupId));
   return g ? g.name : '—';
 };
+
+const getGroupTaskName = (groupTaskId: number | string | undefined | null) => {
+  if (!groupTaskId) return 'N/A';
+  const t = groupTasks.value.find(task => String(task.id) === String(groupTaskId));
+  return t ? t.name : 'N/A';
+};
+
+const getUserName = (userId: number | string | undefined | null) => {
+  if (!userId) return 'N/A';
+  const u = users.value.find(user => String(user.id) === String(userId));
+  return u ? u.fullName : 'N/A';
+};
+
+const getUserAvatar = (userId: number | string | undefined | null) => {
+  if (!userId) return '';
+  const u = users.value.find(user => String(user.id) === String(userId));
+  return u?.avatar || '';
+};
 const totalPages = computed(() => store.state.groupTaskSubmissions.totalPages || 1);
 
 const visiblePages = computed(() => {
@@ -388,8 +406,8 @@ const openUpdateModal = (sub: IGroupTaskSubmission) => {
     name: sub.name,
     description: sub.description || '',
     comment: sub.comment || '',
-    groupTaskId: sub.groupTask?.id || 0,
-    userId: sub.user?.id || 0,
+    groupTaskId: sub.groupTaskId || 0,
+    userId: sub.userId || 0,
     isActive: sub.isActive
   };
   isUpdateModalOpen.value = true;

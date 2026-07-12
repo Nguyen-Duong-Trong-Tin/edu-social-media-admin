@@ -1,6 +1,4 @@
 import type { ISpecification } from ".";
-import type { IGroupTask } from "./groupTasks";
-import type { IUser } from "./users";
 
 export interface IGroupTaskSubmission {
   id: number;
@@ -12,8 +10,8 @@ export interface IGroupTaskSubmission {
   materials: string | null;
   comment: string | null;
   isActive: boolean;
-  groupTask: IGroupTask;
-  user: IUser;
+  groupTaskId: number;
+  userId: number;
   createdAt: string;
   updatedAt: string;
 }
