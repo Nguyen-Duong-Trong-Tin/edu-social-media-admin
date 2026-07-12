@@ -55,7 +55,7 @@
             >
               <option value="" disabled selected>Select a group task...</option>
               <option v-for="tsk in groupTasks" :key="tsk.id" :value="tsk.id">
-                {{ tsk.name }} ({{ tsk.group?.name }})
+                {{ tsk.name }} ({{ getGroupName(tsk.groupId) }})
               </option>
             </select>
           </div>
@@ -102,6 +102,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import type { IGroupTask } from '@/interfaces/groupTasks';
 import type { IUser } from '@/interfaces/users';
+import type { IGroup } from '@/interfaces/groups';
 
 const store = useStore();
 
@@ -114,10 +115,18 @@ const userId = ref<number | ''>('');
 
 const groupTasks = computed<IGroupTask[]>(() => store.state.groupTasks.groupTasks);
 const users = computed<IUser[]>(() => store.state.users.users);
+const groups = computed<IGroup[]>(() => store.state.groups.groups);
+
+const getGroupName = (groupId: number | string | undefined | null) => {
+  if (!groupId) return '—';
+  const g = groups.value.find(group => String(group.id) === String(groupId));
+  return g ? g.name : '—';
+};
 
 onMounted(() => {
   store.dispatch('groupTasks/findGroupTasksAction', { size: 100 });
   store.dispatch('users/findUsersAction', { size: 100 });
+  store.dispatch('groups/findGroupsAction', { size: 100 });
 });
 
 const handleCreateSubmission = async () => {

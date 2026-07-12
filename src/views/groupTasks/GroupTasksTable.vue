@@ -68,7 +68,7 @@
               </div>
             </TableCell>
             <TableCell>
-              <span class="text-neutral-900 text-xs font-medium">{{ task.group?.name || 'N/A' }}</span>
+              <span class="text-neutral-900 text-xs font-medium">{{ getGroupName(task.groupId) }}</span>
             </TableCell>
             <TableCell class="max-w-[240px]">
               <span class="text-neutral-700 text-xs truncate block" :title="task.description || ''">
@@ -259,6 +259,12 @@ const updateForm = ref({
 const groups = computed<IGroup[]>(() => store.state.groups.groups);
 const totalPages = computed(() => store.state.groupTasks.totalPages || 1);
 
+const getGroupName = (groupId: number | string | undefined | null) => {
+  if (!groupId) return 'N/A';
+  const g = groups.value.find(group => String(group.id) === String(groupId));
+  return g ? g.name : 'N/A';
+};
+
 const visiblePages = computed(() => {
   const pages = [];
   const total = totalPages.value;
@@ -328,7 +334,7 @@ const openUpdateModal = (task: IGroupTask) => {
     name: task.name,
     description: task.description || '',
     deadline: task.deadline || '',
-    groupId: task.group?.id || 0,
+    groupId: task.groupId || 0,
     isActive: task.isActive
   };
   isUpdateModalOpen.value = true;

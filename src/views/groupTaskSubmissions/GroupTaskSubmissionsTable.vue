@@ -217,7 +217,7 @@
               required
             >
               <option v-for="tsk in groupTasks" :key="tsk.id" :value="tsk.id">
-                {{ tsk.name }} ({{ tsk.group?.name }})
+                {{ tsk.name }} ({{ getGroupName(tsk.groupId) }})
               </option>
             </select>
           </div>
@@ -274,6 +274,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import type { IGroupTaskSubmission } from '@/interfaces/groupTaskSubmissions';
 import type { IGroupTask } from '@/interfaces/groupTasks';
 import type { IUser } from '@/interfaces/users';
+import type { IGroup } from '@/interfaces/groups';
 
 defineProps<{
   groupTaskSubmissions: IGroupTaskSubmission[]
@@ -302,6 +303,13 @@ const updateForm = ref({
 
 const groupTasks = computed<IGroupTask[]>(() => store.state.groupTasks.groupTasks);
 const users = computed<IUser[]>(() => store.state.users.users);
+const groups = computed<IGroup[]>(() => store.state.groups.groups);
+
+const getGroupName = (groupId: number | string | undefined | null) => {
+  if (!groupId) return '—';
+  const g = groups.value.find(group => String(group.id) === String(groupId));
+  return g ? g.name : '—';
+};
 const totalPages = computed(() => store.state.groupTaskSubmissions.totalPages || 1);
 
 const visiblePages = computed(() => {
@@ -371,6 +379,7 @@ watch([searchKeyword, filterTask, filterUser, filterActive], () => {
 onMounted(() => {
   store.dispatch('groupTasks/findGroupTasksAction', { size: 100 });
   store.dispatch('users/findUsersAction', { size: 100 });
+  store.dispatch('groups/findGroupsAction', { size: 100 });
 });
 
 const openUpdateModal = (sub: IGroupTaskSubmission) => {

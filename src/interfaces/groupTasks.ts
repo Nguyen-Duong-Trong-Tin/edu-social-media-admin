@@ -1,5 +1,4 @@
 import type { ISpecification } from ".";
-import type { IGroup } from "./groups";
 
 export interface IGroupTask {
   id: number;
@@ -10,7 +9,7 @@ export interface IGroupTask {
   videos: string | null;
   deadline: string | null;
   isActive: boolean;
-  group: IGroup;
+  groupId: number;
   createdAt: string;
   updatedAt: string;
 }
