@@ -1,5 +1,4 @@
 import type { ISpecification } from ".";
-import type { IUser } from "./users";
 
 export interface IUserArticle {
   id: number;
@@ -9,7 +8,7 @@ export interface IUserArticle {
   images: string | null;
   videos: string | null;
   isActive: boolean;
-  user: IUser;
+  userId: number;
   createdAt: string;
   updatedAt: string;
 }

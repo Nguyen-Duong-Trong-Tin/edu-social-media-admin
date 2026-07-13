@@ -69,11 +69,11 @@
             <TableCell>
               <div class="flex items-center gap-2">
                 <img
-                  :alt="article.user?.fullName || 'User'"
+                  :alt="getUserName(article.userId)"
                   class="size-6 object-cover rounded-full bg-neutral-100"
-                  :src="article.user?.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(article.user?.fullName || 'User')}`"
+                  :src="getUserAvatar(article.userId) || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(getUserName(article.userId))}`"
                 />
-                <span class="text-neutral-900 text-xs font-medium">{{ article.user?.fullName || 'N/A' }}</span>
+                <span class="text-neutral-900 text-xs font-medium">{{ getUserName(article.userId) }}</span>
               </div>
             </TableCell>
             <TableCell class="max-w-[320px]">
@@ -256,6 +256,18 @@ const updateForm = ref({
 const users = computed<IUser[]>(() => store.state.users.users);
 const totalPages = computed(() => store.state.userArticles.totalPages || 1);
 
+const getUserName = (userId: number | string | undefined | null) => {
+  if (!userId) return 'N/A';
+  const u = users.value.find(user => String(user.id) === String(userId));
+  return u ? u.fullName : 'N/A';
+};
+
+const getUserAvatar = (userId: number | string | undefined | null) => {
+  if (!userId) return '';
+  const u = users.value.find(user => String(user.id) === String(userId));
+  return u?.avatar || '';
+};
+
 const visiblePages = computed(() => {
   const pages = [];
   const total = totalPages.value;
@@ -324,7 +336,7 @@ const openUpdateModal = (article: IUserArticle) => {
     id: article.id,
     name: article.name,
     description: article.description || '',
-    userId: article.user?.id || 0,
+    userId: article.userId || 0,
     isActive: article.isActive
   };
   isUpdateModalOpen.value = true;
