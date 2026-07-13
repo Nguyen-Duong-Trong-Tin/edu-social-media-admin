@@ -48,6 +48,7 @@ import {
 } from "lucide-vue-next";
 import { computed } from 'vue';
 import { useStore } from 'vuex';
+import { getCookie } from '@/utils/cookie';
 
 const store = useStore();
 const route = useRoute();
@@ -77,8 +78,10 @@ const roles = computed(() => store.state.roles.roles);
 const userRoleName = computed(() => {
   const account = loggedInAccount.value;
   if (!account) return '';
-  const role = roles.value.find((r: any) => r.id === account.roleId);
-  return role ? role.name : 'N/A';
+  const role = roles.value.find((r: any) => String(r.id) === String(account.roleId));
+  if (role) return role.name;
+  const cookieRole = getCookie("role");
+  return cookieRole || 'N/A';
 });
 
 const isRouteActive = (path: string, exact: boolean) => {
