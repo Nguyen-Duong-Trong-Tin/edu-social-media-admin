@@ -30,7 +30,7 @@
         src="https://images.unsplash.com/photo-1714750977930-e7a7f4611257?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400" />
       <div class="leading-tight flex flex-col" v-if="loggedInAccount">
         <span class="font-semibold text-xs leading-4">{{ loggedInAccount.fullName }}</span>
-        <span class="text-white/50 text-[11px]">{{ loggedInAccount.role.name }}</span>
+        <span class="text-white/50 text-[11px]">{{ userRoleName }}</span>
       </div>
     </div>
   </aside>
@@ -73,6 +73,13 @@ const iconMap: Record<string, any> = {
 const settingSidebarLinks = computed(() => store.state.settingSidebarLinks.settingSidebarLinks);
 
 const loggedInAccount = computed(() => store.state.accounts.loggedInAccount);
+const roles = computed(() => store.state.roles.roles);
+const userRoleName = computed(() => {
+  const account = loggedInAccount.value;
+  if (!account) return '';
+  const role = roles.value.find((r: any) => r.id === account.roleId);
+  return role ? role.name : 'N/A';
+});
 
 const isRouteActive = (path: string, exact: boolean) => {
   if (exact) {

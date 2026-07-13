@@ -73,7 +73,7 @@
             <TableCell class="text-neutral-600 font-mono text-xs">{{ account.userName }}</TableCell>
             <TableCell>
               <Badge class="border-transparent bg-[#1877F2]/10 text-[#1877F2] hover:bg-[#1877F2]/20">
-                {{ account.role?.name || 'N/A' }}
+                {{ getRoleName(account.roleId) }}
               </Badge>
             </TableCell>
             <TableCell>
@@ -237,6 +237,12 @@ const updateForm = ref({
 const roles = computed<IRole[]>(() => store.state.roles.roles);
 const totalPages = computed(() => store.state.accounts.totalPages || 1);
 
+const getRoleName = (roleId: number | string | undefined | null) => {
+  if (!roleId) return 'N/A';
+  const r = roles.value.find(role => String(role.id) === String(roleId));
+  return r ? r.name : 'N/A';
+};
+
 const visiblePages = computed(() => {
   const pages = [];
   const total = totalPages.value;
@@ -301,7 +307,7 @@ const openUpdateModal = (account: IAccount) => {
   updateForm.value = {
     id: account.id,
     fullName: account.fullName,
-    roleId: account.role?.id || 0
+    roleId: account.roleId || 0
   };
   isUpdateModalOpen.value = true;
 };

@@ -15,7 +15,7 @@
           src="https://images.unsplash.com/photo-1714750977930-e7a7f4611257?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400" />
         <div class="leading-tight flex flex-col" v-if="loggedInAccount">
           <span class="font-semibold text-sm leading-5">{{ loggedInAccount.fullName }}</span>
-          <span class="text-neutral-500 text-xs leading-4">{{ loggedInAccount.role.name }}</span>
+          <span class="text-neutral-500 text-xs leading-4">{{ userRoleName }}</span>
         </div>
         <ChevronDown class="size-4 text-neutral-500" />
       </div>
@@ -34,5 +34,12 @@ import { useStore } from "vuex";
 const store = useStore();
 
 const loggedInAccount = computed(() => store.state.accounts.loggedInAccount);
+const roles = computed(() => store.state.roles.roles);
+const userRoleName = computed(() => {
+  const account = loggedInAccount.value;
+  if (!account) return '';
+  const role = roles.value.find((r: any) => r.id === account.roleId);
+  return role ? role.name : 'N/A';
+});
 </script>
 <style></style>

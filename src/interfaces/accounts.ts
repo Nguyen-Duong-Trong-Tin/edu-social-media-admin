@@ -1,5 +1,4 @@
 import type { ISpecification } from ".";
-import type { IRole } from "./roles";
 
 export interface IAccount {
   id: number;
@@ -7,7 +6,7 @@ export interface IAccount {
   userName: string;
   avatar: string | null;
   isActive: boolean;
-  role: IRole;
+  roleId: number;
   createdAt: string;
   updatedAt: string;
 }

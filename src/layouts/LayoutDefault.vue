@@ -27,5 +27,6 @@ const loggedInAccount = computed(() => store.state.accounts.loggedInAccount);
 if (!loggedInAccount.value) {
   store.dispatch("accounts/findLoggedInAccountAction");
 }
+store.dispatch("roles/findRolesAction", { size: 100 });
 </script>
 <style></style>

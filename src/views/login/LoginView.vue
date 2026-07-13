@@ -76,6 +76,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 import { toast } from 'vue-sonner'
 import { GraduationCap, Mail, Lock, Eye, EyeOff } from 'lucide-vue-next'
 
@@ -85,6 +86,7 @@ import type { IResponse } from '@/interfaces'
 import type {  IAuthLoginResponse } from '@/interfaces/auth'
 
 const router = useRouter()
+const store = useStore()
 
 const userName = ref('')
 const password = ref('')
@@ -107,7 +109,19 @@ const handleLogin = async () => {
     setCookie("accessToken", accessToken, 7);
     setCookie("refreshToken", refreshToken, 7);
     setCookie("userName", account.userName, 7);
-    setCookie("role", account.role.name, 7);
+
+    try {
+      await store.dispatch("roles/findRolesAction", { size: 100 });
+      const roles = store.state.roles.roles;
+      const userRole = roles.find((r: any) => r.id === account.roleId);
+      if (userRole) {
+        setCookie("role", userRole.name, 7);
+      } else {
+        setCookie("role", "USER", 7);
+      }
+    } catch (e) {
+      setCookie("role", "USER", 7);
+    }
 
     router.push("/");
   } catch (error) {
