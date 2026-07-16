@@ -71,7 +71,7 @@ const iconMap: Record<string, any> = {
   Send
 };
 
-const settingSidebarLinks = computed(() => store.state.settingSidebarLinks.settingSidebarLinks);
+const settingSidebarLinks = computed(() => store.state.settingSidebarLinks.allSidebarLinks);
 
 const loggedInAccount = computed(() => store.state.accounts.loggedInAccount);
 const roles = computed(() => store.state.roles.roles);
@@ -91,7 +91,7 @@ const isRouteActive = (path: string, exact: boolean) => {
   return route.path.startsWith(path);
 };
 
-store.dispatch('settingSidebarLinks/findSettingSidebarLinksAction', { sort: "sortOrder,asc", size: 100 });
+store.dispatch('settingSidebarLinks/findAllSettingSidebarLinksAction', { sort: "sortOrder,asc", size: 100 });
 </script>
 
 <style scoped>

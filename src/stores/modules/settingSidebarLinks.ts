@@ -14,9 +14,10 @@ import type {
 } from "@/interfaces/settingSidebarLink";
 import type { ActionContext } from "vuex";
 
-const state = () => {
+const state = (): ISettingSidebarLinksState => {
   return {
     settingSidebarLinks: [],
+    allSidebarLinks: [],
     totalPages: 0,
   };
 };
@@ -31,6 +32,12 @@ const mutations = {
     state.settingSidebarLinks = data.items;
     state.totalPages = data.totalPages;
   },
+  setAllSidebarLinksMutation(
+    state: ISettingSidebarLinksState,
+    items: ISettingSidebarLink[]
+  ) {
+    state.allSidebarLinks = items;
+  },
 };
 
 const actions = {
@@ -40,6 +47,13 @@ const actions = {
   ) {
     const { data } = await findSettingSidebarLinksApi(params);
     context.commit("setSettingSidebarLinksMutation", data);
+  },
+  async findAllSettingSidebarLinksAction(
+    context: ActionContext<ISettingSidebarLinksState, IRootState>,
+    params: ISettingSidebarLinksFind
+  ) {
+    const { data } = await findSettingSidebarLinksApi(params);
+    context.commit("setAllSidebarLinksMutation", data.items);
   },
   async createSettingSidebarLinkAction(
     context: ActionContext<ISettingSidebarLinksState, IRootState>,

@@ -13,6 +13,7 @@ import GroupTasksView from "@/views/groupTasks/GroupTasksView.vue";
 import GroupTaskSubmissionsView from "@/views/groupTaskSubmissions/GroupTaskSubmissionsView.vue";
 import ChatRoomsView from "@/views/chatRooms/ChatRoomsView.vue";
 import ChatMessagesView from "@/views/chatMessages/ChatMessagesView.vue";
+import SettingsView from "@/views/settings/SettingsView.vue";
 import { createRouter, createWebHistory } from "vue-router";
 import LoginView from "@/views/login/LoginView.vue";
 import { deleteCookie, getCookie, setCookie } from "@/utils/cookie";
@@ -102,6 +103,11 @@ const router = createRouter({
       path: "/chat-messages",
       name: "chat-messages",
       component: ChatMessagesView,
+    },
+    {
+      path: "/settings",
+      name: "settings",
+      component: SettingsView,
     },
   ],
 });

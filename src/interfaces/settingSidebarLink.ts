@@ -37,5 +37,6 @@ export interface ISettingSidebarLinkUpdate {
 
 export interface ISettingSidebarLinksState {
   settingSidebarLinks: ISettingSidebarLink[];
+  allSidebarLinks: ISettingSidebarLink[];
   totalPages: number;
 }

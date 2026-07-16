@@ -11,7 +11,7 @@
         <CardContent class="flex p-0 justify-between items-center">
           <div class="flex flex-col gap-1">
             <span class="text-neutral-500 text-sm leading-5">Total Users</span>
-            <span class="font-bold text-2xl leading-8">1,240</span>
+            <span class="font-bold text-2xl leading-8">{{ totalUsers }}</span>
             <span class="font-medium text-emerald-600 text-xs leading-4 flex items-center gap-1">
               <TrendingUp class="size-3" /> +12.5%
             </span>
@@ -25,14 +25,14 @@
       <Card class="p-6 gap-4">
         <CardContent class="flex p-0 justify-between items-center">
           <div class="flex flex-col gap-1">
-            <span class="text-neutral-500 text-sm leading-5">Total Courses</span>
-            <span class="font-bold text-2xl leading-8">86</span>
+            <span class="text-neutral-500 text-sm leading-5">Total Groups</span>
+            <span class="font-bold text-2xl leading-8">{{ totalGroups }}</span>
             <span class="font-medium text-emerald-600 text-xs leading-4 flex items-center gap-1">
               <TrendingUp class="size-3" /> +4.2%
             </span>
           </div>
           <div class="size-12 rounded-xl bg-violet-500/10 flex justify-center items-center">
-            <BookOpen class="size-6 text-violet-500" />
+            <Users class="size-6 text-violet-500" />
           </div>
         </CardContent>
       </Card>
@@ -40,8 +40,8 @@
       <Card class="p-6 gap-4">
         <CardContent class="flex p-0 justify-between items-center">
           <div class="flex flex-col gap-1">
-            <span class="text-neutral-500 text-sm leading-5">Total Posts</span>
-            <span class="font-bold text-2xl leading-8">4,530</span>
+            <span class="text-neutral-500 text-sm leading-5">Total Articles</span>
+            <span class="font-bold text-2xl leading-8">{{ totalArticles }}</span>
             <span class="font-medium text-emerald-600 text-xs leading-4 flex items-center gap-1">
               <TrendingUp class="size-3" /> +8.1%
             </span>
@@ -56,7 +56,7 @@
         <CardContent class="flex p-0 justify-between items-center">
           <div class="flex flex-col gap-1">
             <span class="text-neutral-500 text-sm leading-5">Total Roles</span>
-            <span class="font-bold text-2xl leading-8">5</span>
+            <span class="font-bold text-2xl leading-8">{{ totalRoles }}</span>
             <span class="font-medium text-neutral-500 text-xs leading-4 flex items-center gap-1">
               <Minus class="size-3" /> Stable
             </span>
@@ -116,7 +116,7 @@
           <CardTitle class="text-base leading-6">Recent Users</CardTitle>
           <CardDescription class="text-xs leading-4">Newly registered members</CardDescription>
         </div>
-        <Button class="gap-1" size="sm" variant="outline">
+        <Button class="gap-1" size="sm" variant="outline" @click="router.push('/users')">
           <ExternalLink class="size-4" /> View all
         </Button>
       </CardHeader>
@@ -136,19 +136,19 @@
             <TableRow v-for="user in recentUsers" :key="user.email">
               <TableCell>
                 <div class="flex items-center gap-3">
-                  <img :alt="user.name" class="size-8 object-cover rounded-full" :src="user.avatar" />
-                  <span class="font-medium">{{ user.name }}</span>
+                  <img :alt="user.fullName" class="size-8 object-cover rounded-full" :src="user.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user.fullName)}`" />
+                  <span class="font-medium">{{ user.fullName }}</span>
                 </div>
               </TableCell>
               <TableCell class="text-neutral-500">{{ user.email }}</TableCell>
               <TableCell>
-                <Badge variant="secondary">{{ user.role }}</Badge>
+                <Badge variant="secondary">User</Badge>
               </TableCell>
-              <TableCell class="text-neutral-500">{{ user.joinedDate }}</TableCell>
+              <TableCell class="text-neutral-500">{{ formatDate(user.createdAt) }}</TableCell>
               <TableCell>
-                <Badge :class="user.status === 'Active' ? 'bg-emerald-100 text-emerald-700' : 'text-neutral-500'"
-                  :variant="user.status === 'Active' ? 'default' : 'outline'">
-                  {{ user.status }}
+                <Badge :class="user.isActive ? 'bg-emerald-100 text-emerald-700' : 'text-neutral-500'"
+                  :variant="user.isActive ? 'default' : 'outline'">
+                  {{ user.isActive ? 'Active' : 'Inactive' }}
                 </Badge>
               </TableCell>
               <TableCell>
@@ -173,7 +173,7 @@
 <script setup lang="ts">
 import {
   BookOpen, ExternalLink, FileText, Minus, MoreHorizontal, Pencil,
-  Shield, Trash2, TrendingUp, User
+  Shield, Trash2, TrendingUp, User, Users
 } from "lucide-vue-next";
 
 import { Badge } from "@/components/ui/badge";
@@ -183,6 +183,52 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 
 import { VisArea, VisAxis, VisGroupedBar, VisXYContainer } from "@unovis/vue";
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { findUsersApi } from "@/apis/users";
+import { findGroupsApi } from "@/apis/groups";
+import { findUserArticlesApi } from "@/apis/userArticles";
+import { findGroupArticlesApi } from "@/apis/groupArticles";
+import { findRolesApi } from "@/apis/roles";
+
+const router = useRouter();
+
+const totalUsers = ref(0);
+const totalGroups = ref(0);
+const totalArticles = ref(0);
+const totalRoles = ref(0);
+const recentUsers = ref<any[]>([]);
+
+onMounted(async () => {
+  try {
+    const [usersRes, groupsRes, userArticlesRes, groupArticlesRes, rolesRes, recentUsersRes] = await Promise.all([
+      findUsersApi({ page: 0, size: 1 }),
+      findGroupsApi({ page: 0, size: 1 }),
+      findUserArticlesApi({ page: 0, size: 1 }),
+      findGroupArticlesApi({ page: 0, size: 1 }),
+      findRolesApi({ page: 0, size: 1 } as any),
+      findUsersApi({ page: 0, size: 5, sort: "createdAt,desc" } as any)
+    ]);
+    
+    totalUsers.value = usersRes.data.totalPages;
+    totalGroups.value = groupsRes.data.totalPages;
+    totalArticles.value = userArticlesRes.data.totalPages + groupArticlesRes.data.totalPages;
+    totalRoles.value = rolesRes.data.totalPages;
+    recentUsers.value = recentUsersRes.data.items;
+  } catch (error) {
+    console.error("Failed to load dashboard statistics:", error);
+  }
+});
+
+const formatDate = (dateStr: string) => {
+  if (!dateStr) return '';
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: '2-digit',
+    year: 'numeric'
+  });
+};
 
 const areaData = [
   { day: "Mon", users: 40 }, { day: "Tue", users: 62 }, { day: "Wed", users: 55 },
@@ -192,40 +238,5 @@ const areaData = [
 const barData = [
   { cat: "Web", count: 320 }, { cat: "Data", count: 280 }, { cat: "AI", count: 410 },
   { cat: "Design", count: 190 }, { cat: "Mobile", count: 240 }, { cat: "Cloud", count: 300 },
-];
-
-const recentUsers = [
-  {
-    name: "Emma Watson",
-    email: "emma.w@mail.com",
-    role: "Instructor",
-    joinedDate: "Mar 12, 2025",
-    status: "Active",
-    avatar: "https://images.unsplash.com/photo-1699899657675-1003c7d28f2d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400"
-  },
-  {
-    name: "James Carter",
-    email: "j.carter@mail.com",
-    role: "Student",
-    joinedDate: "Mar 10, 2025",
-    status: "Active",
-    avatar: "https://images.unsplash.com/photo-1714750977930-e7a7f4611257?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400"
-  },
-  {
-    name: "Sofia Nguyen",
-    email: "sofia.n@mail.com",
-    role: "Student",
-    joinedDate: "Mar 08, 2025",
-    status: "Inactive",
-    avatar: "https://images.unsplash.com/photo-1699899657675-1003c7d28f2d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400"
-  },
-  {
-    name: "Liam Brooks",
-    email: "liam.b@mail.com",
-    role: "Moderator",
-    joinedDate: "Mar 05, 2025",
-    status: "Active",
-    avatar: "https://images.unsplash.com/photo-1714750977930-e7a7f4611257?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400"
-  }
 ];
 </script>
