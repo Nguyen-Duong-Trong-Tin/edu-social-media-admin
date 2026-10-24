@@ -1,12 +1,13 @@
 import type { ISpecification } from ".";
 
+export type UserArticleStatus = 'PRIVATE' | 'PUBLIC' | 'FRIENDS';
+
 export interface IUserArticle {
   id: number;
-  name: string;
-  slug: string;
-  description: string | null;
+  content: string;
   images: string | null;
   videos: string | null;
+  status: UserArticleStatus;
   isActive: boolean;
   userId: number;
   createdAt: string;
@@ -14,21 +15,22 @@ export interface IUserArticle {
 }
 
 export interface IUserArticlesFind extends ISpecification {
-  name?: string;
+  content?: string;
+  status?: UserArticleStatus;
   userId?: number;
   userName?: string;
   isActive?: boolean;
 }
 
 export interface IUserArticleCreate {
-  name: string;
-  description?: string;
+  content: string;
+  status: UserArticleStatus;
   userId: number;
 }
 
 export interface IUserArticleUpdate {
-  name?: string;
-  description?: string;
+  content?: string;
+  status?: UserArticleStatus;
   userId?: number;
   isActive?: boolean;
 }

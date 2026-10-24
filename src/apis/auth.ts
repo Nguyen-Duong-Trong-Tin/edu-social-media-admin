@@ -4,21 +4,21 @@ import axiosApi from ".";
 import type { IResponse } from "@/interfaces";
 
 export const loginAuthApi = async (payload: IAuthLogin) => {
-  const response = await axiosApi.post("v1/auth/login", payload);
+  const response = await axiosApi.post("v1/admin/auth/login", payload);
   return response as unknown as IResponse<IAuthLoginResponse>;
 };
 
 export const refreshTokenAuthApi = async (payload: IRefreshToken) => {
-  const response = await axiosApi.post("v1/auth/refresh-token", payload);
+  const response = await axiosApi.post("v1/admin/auth/refresh-token", payload);
   return response as unknown as IResponse<IAuthRefreshTokenResponse>;
 }
 
 export const meAuthApi = async () => {
-  const response = await axiosApi.post("v1/auth/me");
+  const response = await axiosApi.post("v1/admin/auth/me");
   return response;
 }
 
 export const verifyTokenAuthApi = async () => {
-  const response = await axiosApi.post("/v1/auth/verify-token");
+  const response = await axiosApi.post("/v1/admin/auth/verify-token");
   return response;
 }

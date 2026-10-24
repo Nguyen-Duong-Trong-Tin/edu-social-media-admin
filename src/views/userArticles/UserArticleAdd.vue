@@ -31,13 +31,22 @@
 
         <CardContent class="flex p-0 flex-col gap-4 mt-6">
           <div class="flex flex-col gap-2">
-            <Label for="name">Article Title</Label>
-            <Input id="name" placeholder="e.g. My Personal Coding Journey" v-model="name" required />
+            <Label for="content">Content</Label>
+            <Textarea id="content" placeholder="Article content..." class="min-h-24" v-model="content" required />
           </div>
 
           <div class="flex flex-col gap-2">
-            <Label for="description">Content / Description</Label>
-            <Textarea id="description" placeholder="Article content or description..." class="min-h-24" v-model="description" />
+            <Label for="status">Status</Label>
+            <select
+              id="status"
+              v-model="status"
+              class="h-9 rounded-md border border-neutral-200 bg-white px-3 py-1 text-sm shadow-xs outline-hidden focus-visible:ring-3 focus-visible:ring-ring/50 w-full"
+              required
+            >
+              <option value="PUBLIC">PUBLIC</option>
+              <option value="PRIVATE">PRIVATE</option>
+              <option value="FRIENDS">FRIENDS</option>
+            </select>
           </div>
 
           <div class="flex flex-col gap-2">
@@ -81,12 +90,13 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import type { IUser } from '@/interfaces/users';
+import type { UserArticleStatus } from '@/interfaces/userArticles';
 
 const store = useStore();
 
 const isModalOpen = ref(false);
-const name = ref('');
-const description = ref('');
+const content = ref('');
+const status = ref('PUBLIC' as UserArticleStatus);
 const userId = ref<number | ''>('');
 
 const users = computed<IUser[]>(() => store.state.users.users);
@@ -103,14 +113,14 @@ const handleCreateArticle = async () => {
 
   try {
     await store.dispatch('userArticles/createUserArticleAction', {
-      name: name.value,
-      description: description.value || undefined,
+      content: content.value,
+      status: status.value,
       userId: Number(userId.value)
     });
 
     isModalOpen.value = false;
-    name.value = '';
-    description.value = '';
+    content.value = '';
+    status.value = 'PUBLIC';
     userId.value = '';
 
     store.dispatch('userArticles/findUserArticlesAction');

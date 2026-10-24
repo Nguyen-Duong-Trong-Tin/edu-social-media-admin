@@ -3,7 +3,7 @@
     <CardHeader class="p-0 flex-row justify-between items-center gap-2">
       <div class="relative w-72">
         <Search class="size-4 top-1/2 -translate-y-1/2 text-neutral-500 absolute left-3" />
-        <Input class="border-transparent bg-neutral-100 pl-9 h-9" placeholder="Search articles by name..." v-model="searchKeyword" />
+        <Input class="border-transparent bg-neutral-100 pl-9 h-9" placeholder="Search articles by content..." v-model="searchKeyword" />
       </div>
       <Button variant="outline" size="sm" class="gap-2" @click="showFilters = !showFilters" :class="{ 'bg-neutral-100': showFilters }">
         <SlidersHorizontal class="size-4" /> Filter
@@ -49,10 +49,10 @@
         <TableHeader>
           <TableRow class="border-neutral-200 border-solid">
             <TableHead class="text-neutral-500 w-12">#</TableHead>
-            <TableHead class="text-neutral-500">Article</TableHead>
+            <TableHead class="text-neutral-500">Content</TableHead>
             <TableHead class="text-neutral-500">Author</TableHead>
-            <TableHead class="text-neutral-500">Content / Description</TableHead>
             <TableHead class="text-neutral-500">Status</TableHead>
+            <TableHead class="text-neutral-500">Active</TableHead>
             <TableHead class="text-right text-neutral-500">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -60,11 +60,10 @@
           <TableRow v-for="(article, index) in userArticles" :key="article.id" :class="{ 'bg-neutral-100/50': index % 2 !== 0 }"
             class="border-neutral-200 border-solid">
             <TableCell class="text-neutral-500">{{ (currentPage * pageSize) + index + 1 }}</TableCell>
-            <TableCell>
-              <div class="flex flex-col">
-                <span class="font-medium text-neutral-900 leading-tight">{{ article.name }}</span>
-                <span class="text-neutral-500 text-[11px] font-mono leading-none mt-0.5">{{ article.slug }}</span>
-              </div>
+            <TableCell class="max-w-[320px]">
+              <span class="font-medium text-neutral-900 truncate block" :title="article.content">
+                {{ article.content }}
+              </span>
             </TableCell>
             <TableCell>
               <div class="flex items-center gap-2">
@@ -76,10 +75,10 @@
                 <span class="text-neutral-900 text-xs font-medium">{{ getUserName(article.userId) }}</span>
               </div>
             </TableCell>
-            <TableCell class="max-w-[320px]">
-              <span class="text-neutral-700 text-xs truncate block" :title="article.description || ''">
-                {{ article.description || '—' }}
-              </span>
+            <TableCell>
+              <Badge class="border-transparent bg-[#1877F2]/10 text-[#1877F2] hover:bg-[#1877F2]/20">
+                {{ article.status }}
+              </Badge>
             </TableCell>
             <TableCell>
               <Badge
@@ -170,13 +169,22 @@
 
         <CardContent class="flex p-0 flex-col gap-4 mt-6">
           <div class="flex flex-col gap-2">
-            <Label for="update-name">Article Title</Label>
-            <Input id="update-name" placeholder="e.g. My Personal Coding Journey" v-model="updateForm.name" required />
+            <Label for="update-content">Content</Label>
+            <Textarea id="update-content" placeholder="Article content..." class="min-h-24" v-model="updateForm.content" required />
           </div>
 
           <div class="flex flex-col gap-2">
-            <Label for="update-description">Content / Description</Label>
-            <Textarea id="update-description" placeholder="Article content or description..." class="min-h-24" v-model="updateForm.description" />
+            <Label for="update-status">Status</Label>
+            <select
+              id="update-status"
+              v-model="updateForm.status"
+              class="h-9 rounded-md border border-neutral-200 bg-white px-3 py-1 text-sm shadow-xs outline-hidden focus-visible:ring-3 focus-visible:ring-ring/50 w-full"
+              required
+            >
+              <option value="PUBLIC">PUBLIC</option>
+              <option value="PRIVATE">PRIVATE</option>
+              <option value="FRIENDS">FRIENDS</option>
+            </select>
           </div>
 
           <div class="flex flex-col gap-2">
@@ -228,7 +236,7 @@ import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-import type { IUserArticle } from '@/interfaces/userArticles';
+import type { IUserArticle, UserArticleStatus } from '@/interfaces/userArticles';
 import type { IUser } from '@/interfaces/users';
 
 defineProps<{
@@ -247,8 +255,8 @@ const pageSize = ref(10);
 const isUpdateModalOpen = ref(false);
 const updateForm = ref({
   id: 0,
-  name: '',
-  description: '',
+  content: '',
+  status: 'PUBLIC' as UserArticleStatus,
   userId: 0,
   isActive: true
 });
@@ -293,7 +301,7 @@ const fetchArticlesData = () => {
   };
 
   if (searchKeyword.value.trim()) {
-    params.name = searchKeyword.value.trim();
+    params.content = searchKeyword.value.trim();
   }
 
   if (filterUser.value !== '') {
@@ -334,8 +342,8 @@ onMounted(() => {
 const openUpdateModal = (article: IUserArticle) => {
   updateForm.value = {
     id: article.id,
-    name: article.name,
-    description: article.description || '',
+    content: article.content,
+    status: article.status,
     userId: article.userId || 0,
     isActive: article.isActive
   };
@@ -346,8 +354,8 @@ const handleUpdateArticle = async () => {
   try {
     await store.dispatch('userArticles/updateUserArticleAction', {
       id: updateForm.value.id,
-      name: updateForm.value.name,
-      description: updateForm.value.description || undefined,
+      content: updateForm.value.content,
+      status: updateForm.value.status,
       userId: updateForm.value.userId,
       isActive: updateForm.value.isActive
     });
